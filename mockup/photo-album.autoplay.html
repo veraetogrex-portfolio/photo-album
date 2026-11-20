@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T32 Photo Album — a trip photo lands on the album cover as a print</title>
+<link rel="stylesheet" href="_shared/nocturne.css">
+<link rel="stylesheet" href="../style.css">
+<style>
+  /* the component from the repo root, dressed in Nocturne type; no grid on the app screen */
+  #stage{background:var(--page);--font:var(--f-text);--display:var(--f-text)}
+  #stage .pa{position:absolute;left:40px;top:50px;zoom:1;z-index:1}
+  body.autoplay #stage :focus-visible{outline:none}
+  body.autoplay #stage .pa-photo:focus-visible .pa-ring{opacity:0}
+  body.autoplay #li-cursor{transition:none}   /* visible from frame one, no fade at the loop seam */
+  #li-cursor svg{transform:scale(1.5);transform-origin:4px 3px}   /* the hand stays readable in a phone-sized reel */
+  #li-cursor.down svg{transform:scale(1.3)}
+</style>
+</head>
+<body>
+<div id="stage" data-title="T32 Photo Album" data-url="veraetogrex-portfolio.github.io/photo-album">
+<section class="pa" id="album" aria-label="Sort trip photos into an album">
+  <p class="pa-brand"><b>VECTOR</b><span>Photos</span></p>
+
+  <!-- the album: its cover is a pile of its prints on a board tinted by the print in front -->
+  <article class="pa-card" aria-label="Album Weekend in the mountains">
+    <div class="pa-tints" aria-hidden="true"></div>
+    <div class="pa-info">
+      <h3 class="pa-title">Weekend in the mountains</h3>
+      <p class="pa-count" aria-live="polite"><span class="pa-roll"><span class="pa-n">2</span></span> <span class="pa-word">photos</span></p>
+      <p class="pa-dates">Oct 11–12 · Lake Ostra</p>
+      <button class="pa-undo" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6 4.5 10.5 9 15"/><path d="M4.5 10.5H14a5.5 5.5 0 0 1 0 11h-3"/></svg>Undo</button>
+    </div>
+  </article>
+
+  <header class="pa-tray-head">
+    <h2>Unsorted</h2>
+    <p class="pa-left" aria-live="polite">4 left</p>
+  </header>
+
+  <!-- every photo lives here, positioned by script.js: a tile in the tray below or a print on the cover -->
+  <div class="pa-photos" role="list" aria-label="Photos"></div>
+</section>
+</div>
+<script>window.AUTOPLAY = true;</script>
+<script src="_shared/stage.js"></script>
+<script src="../script.js"></script>
+<script>
+const albumEl = document.querySelector('#album'), al = albumEl.album;
+const at = (el, dx = 0, dy = 0) => { const r = Stage.rect(el); return [r.cx + dx, r.cy + dy]; };
+Stage.init({
+  reset: () => al.reset(),
+  get cursorStart() { return at(al.tile('ridge'), 18, 22); },     // already resting on the mountain photo in frame one
+  async demo(s) {
+    const t0 = performance.now();
+    const start = at(al.tile('ridge'), 18, 22), R = s.rect(albumEl);
+    await s.wait(200);
+    s.cursor.grab(true); await s.down();                          // 0.2 s: take the mountain photo, it rises off the tray
+    await s.wait(240);
+    await s.move([R.x + al.cover.x + 4, R.y + al.cover.y - 4], 800, { arc: .08 });    // up onto the album: the tray closes, the pile spreads
+    await s.wait(40);
+    await s.up(); s.cursor.grab(false);                             // ≈1.3 s: it lands on paper in front, the board turns its colour, 2 → 3 photos
+    await s.move([R.x + 410, R.y + 448], 520);                      // out of the way, next to Undo, while the cover reads
+    await s.until(t0, 3150);
+    await s.click(al.undo, { ms: 340 });                            // Undo, one motion: the print flies back to the tray
+    await s.move(start, 760);                                       // the hand follows it and rests on the mountain photo: the loop closes on frame one
+    await s.until(t0, 4900);
+  },
+});
+</script>
+</body>
+</html>

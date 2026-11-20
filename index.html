@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Photo Album — veraetogrex_portfolio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Photo Album · zero dependencies · github.com/veraetogrex-portfolio -->
+  <section class="pa" id="album" aria-label="Sort trip photos into an album">
+    <p class="pa-brand"><b>VECTOR</b><span>Photos</span></p>
+
+    <!-- the album: its cover is a pile of its prints on a board tinted by the print in front -->
+    <article class="pa-card" aria-label="Album Weekend in the mountains">
+      <div class="pa-tints" aria-hidden="true"></div>
+      <div class="pa-info">
+        <h3 class="pa-title">Weekend in the mountains</h3>
+        <p class="pa-count" aria-live="polite"><span class="pa-roll"><span class="pa-n">2</span></span> <span class="pa-word">photos</span></p>
+        <p class="pa-dates">Oct 11–12 · Lake Ostra</p>
+        <button class="pa-undo" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6 4.5 10.5 9 15"/><path d="M4.5 10.5H14a5.5 5.5 0 0 1 0 11h-3"/></svg>Undo</button>
+      </div>
+    </article>
+
+    <header class="pa-tray-head">
+      <h2>Unsorted</h2>
+      <p class="pa-left" aria-live="polite">4 left</p>
+    </header>
+
+    <!-- every photo lives here, positioned by script.js: a tile in the tray below or a print on the cover -->
+    <div class="pa-photos" role="list" aria-label="Photos"></div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
